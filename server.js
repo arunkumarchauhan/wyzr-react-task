@@ -24,21 +24,14 @@ app.post("/api/google-login", async (req, res) => {
 
 app.get("/api/search/:term", async (req, res) => {
   const term = req.params.term;
-
+  console.log("Inside");
   if (req.headers.hasOwnProperty("token")) {
-    console.log("TOken FOund");
     const ticket = await client.verifyIdToken({
       idToken: req.headers.token,
       audience: process.env.CLIENT_ID,
     });
     const { name, email, picture } = ticket.getPayload();
     db.insertUserKeyword(email, name, term);
-    console.log(
-      "Data : ",
-      db.select((result) => {
-        console.log(result);
-      })
-    );
   }
   await axios.get("https://www.googleapis.com/books/v1/volumes?q=" + term).then(
     function (response) {
@@ -96,7 +89,6 @@ app.get("/api/stats", async (req, res) => {
 
   try {
     db.select((result) => {
-      console.log(result);
       res.status(200);
       res.json({ data: result });
       return res;

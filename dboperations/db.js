@@ -15,7 +15,7 @@ var Singleton = (function () {
   }
   function createInstance() {
     var object = new sqlite3.Database(
-      ".././sqlite.db",
+      "./sqlite.db",
       sqlite3.OPEN_READWRITE,
       (err) => {
         if (err) {
@@ -58,7 +58,6 @@ function insertUserKeyword(email, name, keyword) {
   try {
     var db = Singleton.getInstance();
 
-    console.log("Database in: " + db);
     db.run(
       "INSERT INTO user_keyword VALUES (?,?,?)",
       [email, name, keyword],
