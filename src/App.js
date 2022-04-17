@@ -1,9 +1,7 @@
 import './App.css';
 import GoogleLogin from 'react-google-login';
 import { useState } from 'react';
-import './BookListPage';
-import BookListPage from './BookListPage';
-import  BookDetail from "./BookDetail" 
+import BookListPage from './component/BookListPage';
 
 
 function App() {
