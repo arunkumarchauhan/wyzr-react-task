@@ -33,16 +33,21 @@ app.post('/api/search', async (req, res) => {
   const { email,term } = req.body;
   await axios.get(
     "https://www.googleapis.com/books/v1/volumes?q="+term).then(function (response) {
+     console.log(response.data);
+    if("items" in response.data){
       if(response.data.items.length>50){
-      data=response.data.items.slice(0,50);}
-    else{
-      data=response.data.items;
-    }
-     
-      res.status(201);
+        data=response.data.items.slice(0,50);}
+      else{
+        data=response.data.items;
+      }
+      res.status(200);
       res.json({ books:data });
      console.log(data[0]);
       return res
+    }
+    
+     res.status(200);
+      res.json({books:null});
     }, (error) => {
       console.log(error);
       res.status(500);
@@ -58,14 +63,22 @@ app.post('/api/search', async (req, res) => {
 app.post('/api/book/:id', async (req, res) => {
   const bookId = req.params.id;
   const { email } = req.body;
+  console.log("Server BookId"+bookId);
   await axios.get(
     "https://www.googleapis.com/books/v1/volumes/"+bookId).then(function (response) {
       
-      
-      res.status(201);
-      res.json(response.data);
-      console.log(response.data);
+      if(response.status>=200&&response.status<=300){
+        res.status(200);
+        res.json(response.data);
+        console.log(response.data);
       return res
+      }
+      else{
+        res.status(200);
+        res.json(response.data);
+        return res
+      }
+      
     }, (error) => {
       console.log(error);
       res.status(500);

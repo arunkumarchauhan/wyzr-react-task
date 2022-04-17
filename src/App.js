@@ -4,7 +4,7 @@ import { useState } from 'react';
 import './BookListPage';
 import BookListPage from './BookListPage';
 import  BookDetail from "./BookDetail" 
-import Modal from 'react-modal';
+
 
 function App() {
   const [loginData, setLoginData] = useState(
@@ -36,9 +36,14 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('loginData');
     setLoginData(null);
+    setBookData(null);
   };
 
   const getBookData = async () => {
+    if(!loginData){
+      alert("Please Login First");
+      return;
+    }
     const res = await fetch('/api/search', {
       method: 'POST',
       body: JSON.stringify({
@@ -47,11 +52,12 @@ function App() {
       }),
       headers: {
         'Content-Type': 'application/json',
+
       },
     });
 
     const data = await res.json();
-    // console.log(data.books);
+    
     setBookData(data.books);
     
   };
@@ -86,7 +92,7 @@ function App() {
         <div className='book-list'>
           {
             
-            bookData?<BookListPage data={bookData}/>:<p></p>
+            bookData?<BookListPage data={bookData}/>:<p>Enter Proper Keyword to search</p>
           }
         </div>
         <br/>

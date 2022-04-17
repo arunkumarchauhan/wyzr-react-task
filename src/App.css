@@ -94,8 +94,10 @@
 
 }
 #card-button{
-  width: 15vw;
-  height: 5vh;
+  width: auto;
+  height: 7vh;
+  align-self: flex-start;
+  margin-bottom: 0%;
 }
 
 @keyframes spinner {

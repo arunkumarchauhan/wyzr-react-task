@@ -20,19 +20,20 @@ const openModal=()=> {
     return  (
     
             <div className="card card-design col-3" >
-          <img className="card-img-top card-image-design" src={data.volumeInfo.imageLinks.thumbnail} alt="Card image cap"/>
+          <img className="card-img-top card-image-design" src={data.volumeInfo.hasOwnProperty("imageLinks") ?data.volumeInfo.imageLinks.thumbnail:null} alt="Image Not FOund"/>
           <div className="card-block">
             <h4 className="card-title">{data.volumeInfo.title}</h4>
-            <p className="card-text">{data.volumeInfo.authors[0]}</p>
+            <p className="card-text">{data.volumeInfo.hasOwnProperty('authors')?data.volumeInfo.authors:""}</p>
           </div>
           <div className="card-block">
           </div>
-          <button id="card-button" onClick={openModal}> View Details</button>
+          <button type="button" class="btn btn-primary" id="card-button" onClick={openModal}> View Details</button>
 
          <Modal isOpen={isModalOpened}
          onRequestClose={closeModal}
+         
          >
-                <BookDetail book={data}/>
+                <BookDetail bookId={data.id}/>
             </Modal>
        
         </div>
