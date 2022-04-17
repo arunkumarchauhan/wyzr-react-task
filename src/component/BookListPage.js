@@ -12,7 +12,7 @@ function BookListPage({data}) {
 <div className="row">
 {
     data.map((element )=> 
-      BookCard(element)
+      <BookCard data={element} key={element.id}/>
     )
 }
 </div>

@@ -6,7 +6,7 @@ import './BookDetail';
 import Modal from 'react-modal';
 import BookDetail from './BookDetail';
 
-function BookCard(data){
+function BookCard({data}){
 const [isModalOpened,setIsModalOpened]=useState(false);
 const openModal=()=> {
     

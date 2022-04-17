@@ -1,98 +1,117 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const path = require('path');
-const { OAuth2Client } = require('google-auth-library');
-const axios = require('axios');
+const express = require("express");
+const dotenv = require("dotenv");
+const path = require("path");
+const { OAuth2Client } = require("google-auth-library");
+const axios = require("axios");
+const db = require("./dboperations/db");
 dotenv.config();
 const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
 const app = express();
 app.use(express.json());
 
-const users = [];
-
-function upsert(array, item) {
-  const i = array.findIndex((_item) => _item.email === item.email);
-  if (i > -1) array[i] = item;
-  else array.push(item);
-}
-
-app.post('/api/google-login', async (req, res) => {
+app.post("/api/google-login", async (req, res) => {
   const { token } = req.body;
   const ticket = await client.verifyIdToken({
     idToken: token,
     audience: process.env.CLIENT_ID,
   });
   const { name, email, picture } = ticket.getPayload();
-  upsert(users, { name, email, picture });
+
   res.status(201);
   res.json({ name, email, picture });
 });
 
-app.post('/api/search', async (req, res) => {
-  const { email,term } = req.body;
-  await axios.get(
-    "https://www.googleapis.com/books/v1/volumes?q="+term).then(function (response) {
-     console.log(response.data);
-    if("items" in response.data){
-      if(response.data.items.length>50){
-        data=response.data.items.slice(0,50);}
-      else{
-        data=response.data.items;
+app.get("/api/search/:term", async (req, res) => {
+  const term = req.params.term;
+
+  if (req.headers.hasOwnProperty("token")) {
+    console.log("TOken FOund");
+    const ticket = await client.verifyIdToken({
+      idToken: req.headers.token,
+      audience: process.env.CLIENT_ID,
+    });
+    const { name, email, picture } = ticket.getPayload();
+    db.insertUserKeyword(email, name, term);
+    console.log(
+      "Data : ",
+      db.select((result) => {
+        console.log(result);
+      })
+    );
+  }
+  await axios.get("https://www.googleapis.com/books/v1/volumes?q=" + term).then(
+    function (response) {
+      if ("items" in response.data) {
+        if (response.data.items.length > 50) {
+          data = response.data.items.slice(0, 50);
+        } else {
+          data = response.data.items;
+        }
+        res.status(200);
+        res.json({ books: data });
+
+        return res;
       }
+
       res.status(200);
-      res.json({ books:data });
-     console.log(data[0]);
-      return res
-    }
-    
-     res.status(200);
-      res.json({books:null});
-    }, (error) => {
+      res.json({ books: null });
+    },
+    (error) => {
       console.log(error);
       res.status(500);
-      res.json({books:null});
-      return res
-    });
-    
-  
-  
+      res.json({ books: null });
+      return res;
+    }
+  );
 });
 
-
-app.post('/api/book/:id', async (req, res) => {
+app.get("/api/book/:id", async (req, res) => {
   const bookId = req.params.id;
-  const { email } = req.body;
-  console.log("Server BookId"+bookId);
-  await axios.get(
-    "https://www.googleapis.com/books/v1/volumes/"+bookId).then(function (response) {
-      
-      if(response.status>=200&&response.status<=300){
+
+  await axios.get("https://www.googleapis.com/books/v1/volumes/" + bookId).then(
+    function (response) {
+      if (response.status >= 200 && response.status <= 300) {
         res.status(200);
         res.json(response.data);
-        console.log(response.data);
-      return res
-      }
-      else{
+
+        return res;
+      } else {
         res.status(200);
         res.json(response.data);
-        return res
+        return res;
       }
-      
-    }, (error) => {
+    },
+    (error) => {
       console.log(error);
       res.status(500);
       res.json(error);
-      return res
-    });
-    
-  
-  
+      return res;
+    }
+  );
 });
 
-app.use(express.static(path.join(__dirname, '/build')));
-app.get('*', (req, res) =>
-  res.sendFile(path.join(__dirname, '/build/index.html'))
+app.get("/api/stats", async (req, res) => {
+  const bookId = req.params.id;
+
+  try {
+    db.select((result) => {
+      console.log(result);
+      res.status(200);
+      res.json({ data: result });
+      return res;
+    });
+  } catch (e) {
+    res.status(500);
+    res.json({ data: null });
+    return res;
+  }
+
+});
+
+app.use(express.static(path.join(__dirname, "/build")));
+app.get("*", (req, res) =>
+  res.sendFile(path.join(__dirname, "/build/index.html"))
 );
 
 app.listen(process.env.PORT || 5000, () => {

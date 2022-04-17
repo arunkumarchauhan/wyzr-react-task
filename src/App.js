@@ -30,9 +30,11 @@ function App() {
     const data = await res.json();
     setLoginData(data);
     localStorage.setItem('loginData', JSON.stringify(data));
+    localStorage.setItem('token',googleData.tokenId);
   };
   const handleLogout = () => {
     localStorage.removeItem('loginData');
+    localStorage.removeItem('token');
     setLoginData(null);
     setBookData(null);
   };
@@ -42,14 +44,12 @@ function App() {
       alert("Please Login First");
       return;
     }
-    const res = await fetch('/api/search', {
-      method: 'POST',
-      body: JSON.stringify({
-        email:loginData.email, 
-        term:document.getElementById("searchInput").value
-      }),
+    const search_term=document.getElementById("searchInput").value;
+    const res = await fetch('/api/search/'+search_term, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'token':localStorage.getItem("token")
 
       },
     });

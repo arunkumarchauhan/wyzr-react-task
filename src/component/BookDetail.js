@@ -12,14 +12,11 @@ function BookDetail({bookId}){
        const loginData=localStorage.getItem('loginData');
         const fetchData = async () => {
           const result = await fetch('/api/book/'+bookId, {
-            method: 'POST',
-            body: JSON.stringify({
-              email:loginData.email, 
-              term:document.getElementById("searchInput").value
-            }),
+            method: 'GET',
+          
             headers: {
               'Content-Type': 'application/json',
-              
+              'token':localStorage.getItem("token")
             },
           });
           const data = await result.json();
