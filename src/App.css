@@ -36,3 +36,88 @@
     transform: rotate(360deg);
   }
 }
+
+.app{
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+.header{
+  background-color: #282c34;
+  min-height: 10vh;
+  
+  align-items: center;
+  
+  margin-left: auto;
+  
+  margin-right: 3vh;
+  margin-top: 3vh;
+  font-size: calc(10px + 2vmin);
+}
+.search-box{
+  margin-bottom: auto; 
+}
+
+#searchButton{
+  margin-left: 1vh;
+}
+#userText{
+  margin-right: 3vh;
+}
+.book-list{
+  padding-top: 10vh;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  justify-self: center;
+  align-content: center;
+
+}
+.card-design{
+  max-height: 150vh;
+  color: #282c34;
+  margin: 5vh;
+ 
+}
+.card-image-design{
+  width: auto;
+  height: 50vh;
+}
+
+.book-card-design{
+  color: #282c34;
+
+}
+#card-button{
+  width: 15vw;
+  height: 5vh;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 10px solid #f3f3f3; /* Light grey */
+  border-top: 10px solid #383636; /* Blue */
+  border-radius: 50%;
+  animation: spinner 1.5s linear infinite;
+}
+
+.spinner-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 350px;
+}
