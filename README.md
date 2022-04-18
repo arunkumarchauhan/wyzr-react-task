@@ -1,4 +1,6 @@
 # Getting Started with Create React App
+# Pre-requisites <br/>
+Make an app n google console add Gogle OAuth client Id in .env file as follows:<br/> REACT_APP_GOOGLE_CLIENT_ID="Your OAuth Client Id"
 
 ## Steps to run on local server
 1> Install all the dependencies <br/>
